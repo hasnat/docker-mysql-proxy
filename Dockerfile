@@ -5,9 +5,7 @@ MAINTAINER BSCheshir <bscheshir.work@gmail.com>
 ENV MYSQL_PROXY_VERSION 0.8.5
 ENV MYSQL_PROXY_TAR_NAME mysql-proxy-$MYSQL_PROXY_VERSION-linux-debian6.0-x86-64bit
 
-ENV LUA_SCRIPT /opt/mysql-proxy/conf/main.lua
-#ENV LUA_SCRIPT /opt/mysql-proxy/conf/log.lua
-#ENV LOG_FILE /opt/mysql-proxy/logs/mysql.log
+ENV LOG_FILE /dev/stdout
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install wget && \
@@ -27,11 +25,11 @@ exec /opt/mysql-proxy/bin/mysql-proxy \\\\\n\
 --plugins=proxy \\\\\n\
 --proxy-address=\${PROXY_DB_HOST}:\${PROXY_DB_PORT} \\\\\n\
 --proxy-backend-addresses=\${REMOTE_DB_HOST}:\${REMOTE_DB_PORT} \\\\\n\
---proxy-lua-script=\${LUA_SCRIPT}\n\
-" >> /usr/local/bin//entrypoint.sh && \
+--proxy-lua-script=/opt/mysql-proxy/conf/log.lua \n\
+" >> /usr/local/bin/entrypoint.sh && \
     chmod u+x /usr/local/bin/entrypoint.sh && \
     ln -s /usr/local/bin/docker-entrypoint.sh /entrypoint.sh # shortcut
-EXPOSE 4040 4041
+EXPOSE 3306
 RUN mkdir -p /opt/mysql-proxy/logs/
 
 COPY . /opt/mysql-proxy/conf/
