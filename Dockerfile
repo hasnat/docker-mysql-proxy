@@ -1,15 +1,17 @@
 FROM debian:jessie
 # docker build -t bscheshir/mysql-proxy:0.8.5 .
-MAINTAINER BSCheshir <bscheshir.work@gmail.com>
+LABEL maintainer "BSCheshir <bscheshir.work@gmail.com>"
 
-ENV MYSQL_PROXY_VERSION 0.8.5
-ENV MYSQL_PROXY_TAR_NAME mysql-proxy-$MYSQL_PROXY_VERSION-linux-debian6.0-x86-64bit
-
-ENV LOG_FILE /dev/stdout
+ENV MYSQL_PROXY_TAR_NAME=mysql-proxy-0.8.5-linux-debian6.0-x86-64bit \
+    LOG_FILE=/dev/stdout \
+    REMOTE_DB_HOST=mysql \
+    REMOTE_DB_PORT=3306 \
+    PROXY_DB_HOST="" \
+    PROXY_DB_PORT=3306
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install wget && \
-    wget https://downloads.mysql.com/archives/get/file/$MYSQL_PROXY_TAR_NAME.tar.gz && \
+    wget -q https://downloads.mysql.com/archives/get/file/$MYSQL_PROXY_TAR_NAME.tar.gz && \
     tar -xzvf $MYSQL_PROXY_TAR_NAME.tar.gz && \
     mv $MYSQL_PROXY_TAR_NAME /opt/mysql-proxy && \
     rm $MYSQL_PROXY_TAR_NAME.tar.gz && \
